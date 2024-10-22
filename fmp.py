@@ -25,8 +25,7 @@ class FMP:
     def get_final_url(self, url:str):
         return url + '?apikey=' + self.api_key
 
-    def get_all_US_stocks(self) -> dict:
-        t1 = time.time()
+    def get_top_500_US_stocks(self) -> dict:
         url = self.basic_url + FMPEndpoint.LIST_BY_EXCHANGE
         url_nyse = url.replace('-EXCHANGE-', 'NYSE')
         url_nyse = self.get_final_url(url_nyse)
@@ -36,12 +35,12 @@ class FMP:
         response_nasdaq = requests.get(url_nasdaq)
         nyse_df = pd.DataFrame(response_nyse.json())
         nasdaq_df = pd.DataFrame(response_nasdaq.json())
-        t2 = time.time()
-        nyse_df = nyse_df[['symbol','name']]
-        nasdaq_df = nasdaq_df[['symbol','name']]
+        nyse_df = nyse_df[['name','symbol', 'marketCap']]
+        nasdaq_df = nasdaq_df[['name','symbol', 'marketCap']]
         all_us_stock_df = pd.concat([nyse_df, nasdaq_df])
-        t3 = time.time()
-        return all_us_stock_df.to_dict(orient='records')
+        all_us_stock_df_sorted = all_us_stock_df.sort_values(by='marketCap', ascending=False)
+        top_500_us_stocks = all_us_stock_df_sorted.head(500)
+        return top_500_us_stocks.to_dict(orient='records')
 
     def get_all_etf(self) -> dict:
         url = self.basic_url + FMPEndpoint.LIST_ALL_ETFS
@@ -88,4 +87,4 @@ class FMP:
         response = requests.get(url)
         return response.json()
 
-print(FMP().get_stock_historical_quote(symbol='AAPL'))
+# print(FMP().get_stock_historical_quote(symbol='AAPL'))

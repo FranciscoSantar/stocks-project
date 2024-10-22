@@ -6,7 +6,7 @@ import time
 from datetime import datetime
 class FMPEndpoint(StrEnum):
     PING = 'ping'
-    LIST_ALL_COINS = 'coins/list'
+    LIST_ALL_COINS = 'coins/markets?vs_currency=usd'
     COIN_PRICE = 'simple/price?ids=-COIN_ID-&vs_currencies=usd'
 
 class Coingecko:
@@ -22,10 +22,14 @@ class Coingecko:
         response = requests.get(url, headers=self.headers)
         return response.ok
     
-    def get_all_coins(self):
+    def get_top_100_coins(self):
         url = self.basic_url + FMPEndpoint.LIST_ALL_COINS
         response = requests.get(url, headers=self.headers)
-        return response.json()
+        coins_df = pd.DataFrame(response.json())
+        coins = coins_df[['name','symbol', 'image', 'market_cap']]
+        sorted_coins = coins.sort_values(by='market_cap', ascending=False)
+        top_100_us_stocks = sorted_coins.head(100)
+        return top_100_us_stocks.to_dict(orient='records')
     
     def get_coin_id_by_name(self, name:str):
         url = self.basic_url + FMPEndpoint.LIST_ALL_COINS
@@ -42,4 +46,5 @@ class Coingecko:
         response = requests.get(url, headers=self.headers)
         data = {'name': name, 'price': response.json()[f'{coin_id}']['usd'], 'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'timestamp': time.time()}
         return data
-print(Coingecko().get_current_coin_price_by_name('bitcoin'))
+# print(Coingecko().get_current_coin_price_by_name('bitcoin'))
+# print(Coingecko().get_top_100_coins())
