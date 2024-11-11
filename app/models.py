@@ -45,6 +45,12 @@ class User(SQLModel, table=True):
     role_id: int = Field(foreign_key="roles.id")
     created_at: datetime = Field()
     active: bool = Field(default=True)
+    plan_id:bool = Field(foreign_key="plans.id")
+
+class Plans(SQLModel, table=True):
+    __tablename__ = "plans"
+    id: int = Field(primary_key=True)
+    name: str = Field(unique=True)
 
 class Roles(SQLModel, table=True):
     __tablename__ = "roles"
