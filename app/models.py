@@ -42,10 +42,10 @@ class User(SQLModel, table=True):
     phone: str = Field(unique=True)
     name : str = Field()
     password: str = Field()
-    role_id: int = Field(foreign_key="roles.id")
+    role_id: int = Field(foreign_key="roles.id", default=1)
     created_at: datetime = Field()
     active: bool = Field(default=True)
-    plan_id:bool = Field(foreign_key="plans.id")
+    plan_id:int = Field(foreign_key="plans.id", default=1)
 
 class Plans(SQLModel, table=True):
     __tablename__ = "plans"
