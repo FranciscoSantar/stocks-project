@@ -29,5 +29,4 @@ def update_coins_name_and_symbol():
     #     print("ERROR: ", e)
     finally:
         close_cursor_and_coonection(connection, cursor)
-# load_coins()
 update_coins_name_and_symbol()

@@ -11,3 +11,7 @@ class userRequest(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class PortfolioBody(BaseModel):
+    id: int | None = None
+    name: str = Field(min_length=2)

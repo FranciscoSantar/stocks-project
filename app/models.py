@@ -43,7 +43,7 @@ class User(SQLModel, table=True):
     name : str = Field()
     password: str = Field()
     role_id: int = Field(foreign_key="roles.id", default=1)
-    created_at: datetime = Field()
+    created_at: datetime = Field(default_factory=datetime.now)
     active: bool = Field(default=True)
     plan_id:int = Field(foreign_key="plans.id", default=1)
 
@@ -51,6 +51,7 @@ class Plans(SQLModel, table=True):
     __tablename__ = "plans"
     id: int = Field(primary_key=True)
     name: str = Field(unique=True)
+    max_portfolios: int = Field()
 
 class Roles(SQLModel, table=True):
     __tablename__ = "roles"
@@ -62,7 +63,7 @@ class Portfolios(SQLModel, table=True):
     id: int = Field(primary_key=True)
     name: str = Field()
     owner_id: int = Field(foreign_key="users.id")
-    created_at: datetime = Field()
+    created_at: datetime = Field(default_factory=datetime.now)
     active: bool = Field(default=True)
 
 class PortfolioData(SQLModel, table=True):
@@ -70,7 +71,7 @@ class PortfolioData(SQLModel, table=True):
     id: int = Field(primary_key=True)
     portfolio_id: int = Field(foreign_key="portfolios.id")
     asset_id: int = Field(foreign_key="assets.id")
-    purchase_date: datetime = Field()
+    purchase_date: datetime = Field(default_factory=datetime.now)
     purchase_price: float = Field()
     purchase_quantity: float = Field()
     active: bool = Field(default=True)
