@@ -51,7 +51,7 @@ class AuthController():
         return True
 
     def create_access_token(self, username: str, user_id:int, role_id:int, plan_id:int, expires_delta: timedelta):
-        encode = {'username': username, 'user_id': user_id, 'role_id':role_id, 'plan_id':plan_id}
+        encode = {'username': username, 'id': user_id, 'role_id':role_id, 'plan_id':plan_id}
         expires = datetime.now(timezone.utc) + expires_delta
         encode.update({'exp': expires})
         jwt_secret_key = os.environ.get('JWT_SECRET_KEY')
@@ -71,12 +71,12 @@ class AuthController():
             jwt_secret_key = os.environ.get('JWT_SECRET_KEY')
             payload = jwt.decode(jwt=token, key=jwt_secret_key, algorithms=[ALGORITHM])
             username: str = payload.get("username")
-            user_id : int = payload.get("user_id")
+            user_id : int = payload.get("id")
             role_id :int = payload.get("role_id")
             plan_id :int = payload.get("plan_id")
             if username is None or user_id is None:
                 raise HTTPException(status_code=401, detail="Could not validate user.")
-            return {'username': username, 'user_id': user_id, 'role_id':role_id, 'plan_id':plan_id}
+            return {'username': username, 'id': user_id, 'role_id':role_id, 'plan_id':plan_id}
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=401, detail="Token has expired")
         except jwt.InvalidTokenError:
