@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path, Query
+from fastapi import APIRouter, Depends, Path
 from sqlmodel import Session
 from app.controllers.portfolio_controller import PortfolioController
 from app.database import get_db

@@ -7,7 +7,6 @@ class PortfolioController():
 
     def __init__(self):
         self.model = Portfolios
-        pass
 
     def get_all(self, user_id:int, db:Session):
         query = select((self.model)).where(self.model.owner_id==user_id, self.model.active==True)
@@ -25,6 +24,8 @@ class PortfolioController():
         query = select(self.model).where(self.model.owner_id == user_id, self.model.id == id, self.model.active==True)
         return db.exec(query).first()
 
+    def check_portfolio_owner(self, user_id:int, id:int, db:Session):
+        return True if self.get_by_id(user_id=user_id, id=id, db=db) else False
 
     def create(self, user:dict, portfolio_data:PortfolioBody, db:Session) ->Portfolios:
         portfolios_by_user = self.get_amount_portfolios_by_user_id(db=db, user_id=user['id'])

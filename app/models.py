@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 
 
 class Assets(SQLModel, table=True):
@@ -7,11 +7,21 @@ class Assets(SQLModel, table=True):
     id: int = Field(primary_key=True)
     type_id: int = Field(foreign_key="assets_type.id")
 
+    asset_type:"AssetsType" = Relationship(back_populates='assets')
+    portfolio_items : list["PortfolioData"] = Relationship(back_populates='asset_data')
+
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
+
 class AssetsType(SQLModel, table=True):
     __tablename__ = "assets_type"
     id: int = Field(primary_key=True)
     type: str = Field()
 
+    assets: list["Assets"] = Relationship(back_populates='asset_type')
+
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
 class Coins(SQLModel, table=True):
     __tablename__ = "coins"
     id: int = Field(primary_key=True)
@@ -22,6 +32,8 @@ class Coins(SQLModel, table=True):
     image: str | None = Field()
     website: str | None = Field()
 
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
 class Stocks(SQLModel, table=True):
     __tablename__ = "stocks"
     id: int = Field(primary_key=True)
@@ -34,6 +46,8 @@ class Stocks(SQLModel, table=True):
     country: str | None = Field()
     industry: str | None = Field()
 
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
 class User(SQLModel, table=True):
     __tablename__ = "users"
     id: int = Field(primary_key=True)
@@ -47,17 +61,23 @@ class User(SQLModel, table=True):
     active: bool = Field(default=True)
     plan_id:int = Field(foreign_key="plans.id", default=1)
 
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
 class Plans(SQLModel, table=True):
     __tablename__ = "plans"
     id: int = Field(primary_key=True)
     name: str = Field(unique=True)
     max_portfolios: int = Field()
 
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
 class Roles(SQLModel, table=True):
     __tablename__ = "roles"
     id: int = Field(primary_key=True)
     name: str = Field()
 
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
 class Portfolios(SQLModel, table=True):
     __tablename__ = "portfolios"
     id: int = Field(primary_key=True)
@@ -66,6 +86,8 @@ class Portfolios(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     active: bool = Field(default=True)
 
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}
 class PortfolioData(SQLModel, table=True):
     __tablename__ = "portfolio_data"
     id: int = Field(primary_key=True)
@@ -75,3 +97,8 @@ class PortfolioData(SQLModel, table=True):
     purchase_price: float = Field()
     purchase_quantity: float = Field()
     active: bool = Field(default=True)
+
+    asset_data:"Assets" = Relationship(back_populates='portfolio_items')
+
+    def serialize(self):
+        return {key: getattr(self, key) for key in self.__fields__.keys()}

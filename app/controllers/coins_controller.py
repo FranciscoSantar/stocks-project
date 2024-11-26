@@ -15,3 +15,10 @@ class CoinsController():
         if not coin:
             raise HTTPException(status_code=404, detail="Coin no encontrado.")
         return coin
+    
+    def get_coin_by_asset_id(self, asset_id:int, db:Session):
+        query = select(self.model).where(self.model.asset_id == asset_id)
+        coin = db.exec(query).first()
+        if not coin:
+            raise HTTPException(status_code=404, detail="Coin no encontrado.")
+        return coin

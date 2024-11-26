@@ -15,3 +15,8 @@ class UserLogin(BaseModel):
 class PortfolioBody(BaseModel):
     id: int | None = None
     name: str = Field(min_length=2)
+
+class AssetBody(BaseModel):
+    id: int = Field()
+    portfolio_id: int = Field()
+    quantity:float = Field()
