@@ -87,5 +87,12 @@ class FMPController:
         url = self.get_final_url(url)
         response = requests.get(url)
         return response.json()
+    
+    def get_stock_name(self, symbol:str) -> dict:
+        url = self.basic_url + FMPEndpoint.NAME_SEARCH
+        url = url.replace('-TICKER-', symbol)
+        url = self.get_final_url(url)
+        response = requests.get(url)
+        return response.json()[0]['name']
 
 # print(FMP().get_stock_historical_quote(symbol='AAPL'))

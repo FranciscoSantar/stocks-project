@@ -20,3 +20,7 @@ class AssetBody(BaseModel):
     id: int = Field()
     portfolio_id: int = Field()
     quantity:float = Field()
+
+class AssetMovement(BaseModel):
+    quantity:float = Field(ge=0)
+    action:str = Field()

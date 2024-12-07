@@ -21,3 +21,10 @@ class StocksController():
         if not stock:
             raise HTTPException(status_code=404, detail="Stock no encontrado.")
         return stock
+    
+    def get_stock_name_by_asset_id(self, asset_id:int, db:Session):
+        query = select(self.model.name).where(self.model.asset_id == asset_id)
+        name = db.exec(query).first()
+        if not name:
+            raise HTTPException(status_code=404, detail="Stock no encontrado.")
+        return name

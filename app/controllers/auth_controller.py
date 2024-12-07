@@ -34,7 +34,7 @@ class AuthController():
             raise HTTPException(status_code=401, detail='Invalid username')
         if not self.verify_user(username=username, password=password, db=db):
             raise HTTPException(status_code=401, detail='Invalid password')
-        expire_time = timedelta(minutes=60)
+        expire_time = timedelta(minutes=60*24)
         token = self.create_access_token(username=username, user_id = user.id, role_id=user.role_id, plan_id=user.plan_id ,expires_delta = expire_time)
         return token
 

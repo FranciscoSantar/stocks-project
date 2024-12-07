@@ -22,3 +22,10 @@ class CoinsController():
         if not coin:
             raise HTTPException(status_code=404, detail="Coin no encontrado.")
         return coin
+
+    def get_coin_name_by_asset_id(self, asset_id:int, db:Session):
+        query = select(self.model.name).where(self.model.asset_id == asset_id)
+        name = db.exec(query).first()
+        if not name:
+            raise HTTPException(status_code=404, detail="Coin no encontrado.")
+        return name

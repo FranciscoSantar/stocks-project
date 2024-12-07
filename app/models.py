@@ -93,12 +93,21 @@ class PortfolioData(SQLModel, table=True):
     id: int = Field(primary_key=True)
     portfolio_id: int = Field(foreign_key="portfolios.id")
     asset_id: int = Field(foreign_key="assets.id")
-    purchase_date: datetime = Field(default_factory=datetime.now)
-    purchase_price: float = Field()
-    purchase_quantity: float = Field()
+    date: datetime = Field(default_factory=datetime.now)
+    price: float = Field()
+    quantity: float = Field()
     active: bool = Field(default=True)
+    action: str = Field(default='buy')
 
     asset_data:"Assets" = Relationship(back_populates='portfolio_items')
 
     def serialize(self):
         return {key: getattr(self, key) for key in self.__fields__.keys()}
+
+    def serialize_simple(self):
+        return {
+            "date":self.date,
+            "price":self.price,
+            "quantity":self.quantity,
+            "action":self.action
+        }

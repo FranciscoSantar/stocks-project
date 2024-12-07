@@ -46,3 +46,10 @@ class CoingeckoController:
         response = requests.get(url, headers=self.headers)
         data = {'name': name, 'price': response.json()[f'{coin_id}']['usd'], 'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 'timestamp': time.time()}
         return data
+
+    def get_only_current_coin_price_by_name(self, name:str):
+        url = self.basic_url + CoingeckoEndpoint.COIN_PRICE
+        coin_id = self.get_coin_id_by_name(name)
+        url = url.replace('-COIN_ID-', coin_id)
+        response = requests.get(url, headers=self.headers)
+        return response.json()[f'{coin_id}']['usd']
