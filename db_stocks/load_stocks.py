@@ -1,5 +1,5 @@
-from database import create_connection, close_cursor_and_coonection, get_cursor
-from fmp import FMP
+from db_stocks.database import create_connection, close_cursor_and_coonection, get_cursor
+from db_stocks.fmp import FMP
 
 def update_stocks_name_and_symbol():
     stocks = FMP().get_top_500_US_stocks()

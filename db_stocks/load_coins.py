@@ -1,4 +1,4 @@
-from database import create_connection, close_cursor_and_coonection, get_cursor
+from db_stocks.database import create_connection, close_cursor_and_coonection, get_cursor
 from coingecko import Coingecko
 
 def update_coins_name_and_symbol():
