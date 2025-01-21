@@ -1,0 +1,26 @@
+# Ignorar entornos virtuales
+.env
+venv_stock/
+
+# Ignorar archivos generados y de caché de Python
+*.pyc
+__pycache__/
+
+# Ignorar configuraciones de VSCode
+.vscode/
+
+# Ignorar configuraciones y archivos de Docker
+Dockerfile
+docker-compose.yml
+
+# Ignorar scripts de prueba o configuraciones temporales
+*.http
+
+# Ignorar carpetas no necesarias para el contenedor
+backup/
+pgAdmin/
+
+# Asegurarte de incluir archivos importantes
+!.gitignore
+!requirements.txt
+!app/

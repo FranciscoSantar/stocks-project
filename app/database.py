@@ -1,5 +1,9 @@
 from sqlmodel import Session, create_engine
+from dotenv import load_dotenv, find_dotenv
 import os
+
+load_dotenv()
+
 
 user = os.environ.get('PGUSER')
 password = os.environ.get('PGPASSWORD')
