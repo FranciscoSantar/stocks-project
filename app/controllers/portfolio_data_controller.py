@@ -9,6 +9,10 @@ from sqlmodel import Session, select, desc
 from app.controllers.assets_controller import AssetsController
 from app.models import PortfolioData
 from app.controllers.portfolio_controller import PortfolioController
+import redis
+from datetime import datetime, timedelta
+
+r = redis.Redis(host='redis-container', port=6379, decode_responses=True)
 class PortfolioDataController():
 
     def __init__(self):
@@ -48,6 +52,22 @@ class PortfolioDataController():
         assets = db.exec(query).all()
         return assets
 
+    def get_asset_price(self, db:Session, asset_id:int):
+        if r.exists(f"price-{asset_id}"):
+            asset_current_price = float(r.get(f"price-{asset_id}"))
+        else:
+            asset_current_price = AssetsController().get_asset_price_by_id(asset_id=asset_id, db=db)
+            now = datetime.now()
+            if now.hour >=17:
+                adding_days = 7 - now.weekday() if now.weekday() >= 4 else 1
+                next_day  = now + timedelta(days=adding_days)
+                market_open_our = datetime(next_day.year, next_day.month, next_day.day, 10, 30)
+                seconds_to_expire = int((market_open_our - now).total_seconds())
+                r.setex(name=f"price-{asset_id}", time=seconds_to_expire, value=asset_current_price)
+            else:
+                r.setex(name=f"price-{asset_id}", time=15, value=asset_current_price)
+        return asset_current_price
+
     def get_portfolio_simplify_info(self, portfolio_id:int, db:Session, user_id:int):
         portfolio_data = {}
         data = []
@@ -73,7 +93,7 @@ class PortfolioDataController():
             asset_average_buy_price = float("{:.3g}".format(asset_buy_price / asset_total_buy))
             asset_total_quantity = float("{:.3g}".format(asset_total_quantity))
             asset_name = AssetsController().get_asset_name_by_id(asset_id=asset_id, db=db)
-            asset_current_price = AssetsController().get_asset_price_by_id(asset_id=asset_id, db=db)
+            asset_current_price = self.get_asset_price(db=db, asset_id=asset_id)
             portfolio_current_value += asset_current_price*asset_total_quantity
             portfolio_buy_value += asset_average_buy_price*asset_total_quantity
             asset_data[asset_name]={
