@@ -27,7 +27,7 @@ async def add_asset_to_portfolio(asset:AssetBody, portfolio_id:int = Path(gt=0),
 
 @portfolios_data_router.post("/{portfolio_id}/{asset_id}", status_code=status.HTTP_200_OK)
 async def add_asset_movement(quantityAsset:AssetMovement, portfolio_id:int = Path(gt=0), asset_id:int = Path(gt=0), db_session: Session = Depends(get_db), user : dict = Depends(AuthController().get_current_user)): #El depends indica una dependencia, que dice que se debe ejecutar la funcion get_db antes de la ruta.
-    edited_portfolio_data_item = PortfolioDataController().add_asset_movement(asset_id=asset_id, portfolio_id=portfolio_id, new_quantity=quantityAsset.quantity, user_id=user['id'], action=quantityAsset.action, db=db_session)
+    edited_portfolio_data_item = PortfolioDataController().add_asset_movement(asset_id=asset_id, portfolio_id=portfolio_id, quantity=quantityAsset.quantity, user_id=user['id'], action=quantityAsset.action, db=db_session)
     return edited_portfolio_data_item
 
 
